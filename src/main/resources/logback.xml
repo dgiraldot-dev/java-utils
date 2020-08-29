@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE xml>
+<configuration debug="false" scan="true">
+
+	<!-- Properties -->
+    <property name="log.level" value="${logback.level:-all}"/>
+	<property name="log.file.extension" value="${logback.log.file.extension:-.log}"/>
+	<!-- Si se requiere que los evetos registrados por el logger solo se impriman en el archivo .log y no en la consola, se debe cambiar el valor -STDOUT por NULL en la siguiente línea-->
+	<property name="STDOUT" value="${logback.stdout:-STDOUT}"/>
+	
+	<statusListener class="ch.qos.logback.core.status.NopStatusListener" />
+	
+	<appender name="FILE-THREAD" class="ch.qos.logback.classic.sift.SiftingAppender">
+
+		<discriminator>
+			<key>logback.logback.log.directory.path</key>
+			<defaultValue>logs</defaultValue>
+		</discriminator>
+
+		<discriminator>
+			<key>logback.log.file.name</key>
+			<defaultValue>execution</defaultValue>
+		</discriminator>
+		
+		<sift>
+		
+		<!-- Appenders -->
+		<appender name="FILE-ROLLING-${logback.log.file.name}" class="ch.qos.logback.core.rolling.RollingFileAppender">
+			<file>${logback.log.directory.path}/${logback.log.file.name}${log.file.extension}</file>
+			<encoder>
+				<pattern>%d{HH:mm:ss.SSS} [%t] %p %c{1.}.%m%n</pattern>
+			</encoder>
+			<rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+				<fileNamePattern>${logback.log.directory.path}/${logback.log.file.name}_%d{yyyyMMd}_%i${log.file.extension}</fileNamePattern>
+				<!-- each archived file, size max 10MB -->
+				<maxFileSize>10MB</maxFileSize>
+				<!-- total size of all archive files, if total size > 20GB, it will delete old archived file -->
+				<totalSizeCap>20GB</totalSizeCap>
+				<!-- 60 days to keep -->
+				<maxHistory>60</maxHistory>
+			</rollingPolicy>
+		</appender>
+		
+		</sift>
+	
+	</appender>
+	
+	<!-- https://logback.qos.ch/manual/appenders.html#AsyncAppender -->
+	<!-- AsyncAppender will drop events of level TRACE, DEBUG and INFO if its queue is 80% full -->
+	<appender name="ASYNC" class="ch.qos.logback.classic.AsyncAppender">
+		<appender-ref ref="FILE-ROLLING-${logback.log.file.name}" />
+		<!-- default 256 -->
+		<queueSize>512</queueSize>
+	</appender>
+	
+	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+		<layout class="ch.qos.logback.classic.PatternLayout">
+			<Pattern>%d{HH:mm:ss.SSS} [%t] %-5level %logger{36}.%msg%n</Pattern>
+		</layout>
+	</appender>	
+	
+	<!-- Loggers -->
+    <logger name="${logback.loggger.name}" level="${log.level}" additivity="false">
+	<appender-ref ref="FILE-THREAD"/>
+    <appender-ref ref="ASYNC"/>
+    <appender-ref ref="${STDOUT}"/>
+    </logger>
+	
+    <root level="ERROR">
+        <appender-ref ref="STDOUT"/>
+    </root>
+</configuration>
