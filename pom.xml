@@ -140,7 +140,7 @@
 				<artifactId>maven-jar-plugin</artifactId>
 				<version>3.2.0</version>
 				<configuration>
-					<outputDirectory>/Users/DGiraldoT/git/bocc-empresas-qa-automation/libs/co/com/java/utils/1.0.0/java-utils-1.0.0</outputDirectory>
+					<outputDirectory>/Users/DGiraldoT/git/github-avaldigitallabs/bocc-empresas-qa-automation/libs/java-utils-1.0.0</outputDirectory>
 				</configuration>
 			</plugin>
 		</plugins>
