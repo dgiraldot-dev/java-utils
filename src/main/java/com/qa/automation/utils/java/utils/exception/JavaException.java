@@ -3,7 +3,7 @@ package com.qa.automation.utils.java.utils.exception;
 import com.qa.automation.utils.java.utils.common.DialogWindowOprs;
 import com.qa.automation.utils.java.utils.common.StringOprs;
 import com.qa.automation.utils.java.utils.logger.LogManager;
-import com.qa.automation.utils.utils.params.CommonParams;
+import com.qa.automation.utils.java.utils.params.CommonParams;
 
 public class JavaException {
 

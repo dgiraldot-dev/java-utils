@@ -1,8 +1,6 @@
-package com.qa.automation.utils.java.utils;
+package com.qa.automation.utils.java.utils.common;
 
 import java.util.concurrent.TimeUnit;
-import com.qa.automation.utils.java.utils.common.FileOprs;
-import com.qa.automation.utils.java.utils.common.StringOprs;
 
 public class JavaOprs {
 

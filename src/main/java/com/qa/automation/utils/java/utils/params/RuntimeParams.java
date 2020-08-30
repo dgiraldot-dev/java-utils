@@ -1,4 +1,4 @@
-package com.qa.automation.utils.utils.params;
+package com.qa.automation.utils.java.utils.params;
 
 import java.util.HashMap;
 import com.qa.automation.utils.java.utils.exception.JavaException;

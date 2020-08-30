@@ -1,6 +1,6 @@
-package com.qa.automation.utils.utils.params;
+package com.qa.automation.utils.java.utils.params;
 
-import static com.qa.automation.utils.utils.params.ProjectConfigProperties.*;
+import static com.qa.automation.utils.java.utils.params.ProjectConfigProperties.*;
 import com.qa.automation.utils.java.utils.os.CommonOsOprs;
 
 public class CommonParams {

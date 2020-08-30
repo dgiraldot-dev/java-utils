@@ -20,7 +20,7 @@ import com.google.gson.JsonParser;
 import com.qa.automation.utils.java.utils.common.FileOprs;
 import com.qa.automation.utils.java.utils.common.StringOprs;
 import com.qa.automation.utils.java.utils.exception.JavaException;
-import com.qa.automation.utils.utils.params.CommonParams;
+import com.qa.automation.utils.java.utils.params.CommonParams;
 
 public class JsonOprs {
 

@@ -1,10 +1,10 @@
-package com.qa.automation.utils.utils.params;
+package com.qa.automation.utils.java.utils.params;
 
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.Properties;
-import com.qa.automation.utils.java.utils.JavaOprs;
 import com.qa.automation.utils.java.utils.common.FileOprs;
+import com.qa.automation.utils.java.utils.common.JavaOprs;
 import com.qa.automation.utils.java.utils.common.StringOprs;
 import com.qa.automation.utils.java.utils.exception.JavaException;
 

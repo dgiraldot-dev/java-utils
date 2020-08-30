@@ -1,8 +1,8 @@
 package com.qa.automation.utils.java.utils.dataset;
 
 import com.google.gson.JsonObject;
-import com.qa.automation.utils.java.utils.JavaOprs;
 import com.qa.automation.utils.java.utils.common.FileOprs;
+import com.qa.automation.utils.java.utils.common.JavaOprs;
 import com.qa.automation.utils.java.utils.common.StringOprs;
 import com.qa.automation.utils.java.utils.exception.JavaException;
 import com.qa.automation.utils.java.utils.json.JsonOprs;

@@ -6,8 +6,8 @@ import java.net.ServerSocket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
-import com.qa.automation.utils.java.utils.JavaOprs;
 import com.qa.automation.utils.java.utils.common.FileOprs;
+import com.qa.automation.utils.java.utils.common.JavaOprs;
 import com.qa.automation.utils.java.utils.common.StringOprs;
 import com.qa.automation.utils.java.utils.exception.JavaException;
 

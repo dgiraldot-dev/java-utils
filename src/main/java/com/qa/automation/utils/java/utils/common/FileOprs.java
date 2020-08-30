@@ -18,7 +18,7 @@ import org.apache.commons.io.filefilter.DirectoryFileFilter;
 import org.apache.commons.io.filefilter.NotFileFilter;
 import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
-import com.qa.automation.utils.utils.params.CommonParams;
+import com.qa.automation.utils.java.utils.params.CommonParams;
 
 public class FileOprs extends FileUtils {
   
