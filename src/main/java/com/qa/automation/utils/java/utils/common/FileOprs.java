@@ -148,12 +148,6 @@ public class FileOprs extends FileUtils {
     return absoluteDirectoryPath;
   }
 
-  /**
-   * Obtener el contenido de un arhivo de texto
-   * @param filePath ruta destino del archivo de texto
-   * @return String con el contenido del archivo
-   * @throws IOException
-   */
   public String getFileContent ( String filePath ) {
     File file = new File( filePath );
 

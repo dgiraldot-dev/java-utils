@@ -27,16 +27,6 @@ public class AsyncReceiver implements MessageListener, ExceptionListener {
         }
     }
 
-    /**
-     * Crea una conexión Point-to-Point y recibe los mensajes de forma asíncrona.
-     * @param initialContextFactory (<code>String</code>) Contexto inicial de factoría
-     * @param providerURL (<code>String</code>) URL del proveedor
-     * @param queueConnectionFactory (<code>String</code>) Cola de conexión de factoría
-     * @param queueResponse (<code>String</code>) Cola de respuesta
-     * @throws NamingException
-     * @throws JMSException
-     * @throws InterruptedException
-     */
     public void setup ( String initialContextFactory, String providerURL, String queueConnectionFactory, String queueResponse ) throws NamingException, JMSException, InterruptedException {
         // Definición de las variables de ambiente para conexión
         Hashtable < String, String > env = new Hashtable < String, String >();

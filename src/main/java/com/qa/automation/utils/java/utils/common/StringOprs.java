@@ -52,14 +52,6 @@ public class StringOprs {
     return evaluateRegex(regex, text, true);
   }
 
-  /**
-   * Obtener un String de un texto mediante una expresión regular
-   * 
-   * @param regex expresión regular (substring)
-   * @param text texto a validar 
-   * 
-   * @return String a validar si se cumple la expresión regular o null si no se cumple
-   */
   public String getStringWithRegex(String regex, String text, boolean caseSensitive)
   {		
     Matcher matcher;
@@ -208,15 +200,6 @@ public class StringOprs {
 
     return stringToSplit;
   }
-
-  /***
-   * Hace el Wrap del texto de entrada, retornando un nuevo texto con saltos de línea según el número
-   * de carcateres especificado en el parámetro chars_per_line.
-   * 
-   * @param original_text   Texto de entrada
-   * @param chars_per_line  numero de caracteres deseados por línea
-   * @return
-   */
 
   public String wrapText(String original_text, int chars_per_line)
   {

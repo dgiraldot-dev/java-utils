@@ -14,16 +14,6 @@ public class Sender {
 
     private String msgID;
 
-    /**
-     * Crea una conexión Point-to-Point y envia un mensaje al servidor.
-     * @param initialContextFactory (<code>String</code>) Contexto inicial de factoría
-     * @param providerURL (<code>String</code>) URL del proveedor
-     * @param queueConnectionFactory (<code>String</code>) Cola de conexión de factoría
-     * @param queueRequest (<code>String</code>) Cola de petición
-     * @param messageRequest (<code>String</code>) Mensaje de petición
-     * @throws NamingException
-     * @throws JMSException
-     */
     public Sender ( String initialContextFactory, String providerURL, String queueConnectionFactory, String queueRequest, String messageRequest ) throws NamingException, JMSException {
 
         // Definición de las variables de ambiente para conexión

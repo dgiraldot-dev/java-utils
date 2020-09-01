@@ -15,15 +15,6 @@ import javax.naming.NamingException;
  */
 public class Search {
 
-    /**
-     * Crea una conexión Point-to-Point y consulta la cantidad de mensajes que existen en una cola.
-     * @param initialContextFactory (<code>String</code>) Contexto inicial de factoría
-     * @param providerURL (<code>String</code>) URL del proveedor
-     * @param queueConnectionFactory (<code>String</code>) Cola de conexión de factoría
-     * @param queueToBrows (<code>String</code>) Cola a consultar
-     * @throws NamingException
-     * @throws JMSException
-     */
     public Search ( String initialContextFactory, String providerURL, String queueConnectionFactory, String queueToBrows ) throws NamingException, JMSException {
 
         // Definición de las variables de ambiente para conexión
