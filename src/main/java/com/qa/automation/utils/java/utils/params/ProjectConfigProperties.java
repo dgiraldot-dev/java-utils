@@ -3,8 +3,6 @@ package com.qa.automation.utils.java.utils.params;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.Properties;
-import com.qa.automation.utils.java.utils.common.FileOprs;
-import com.qa.automation.utils.java.utils.common.JavaOprs;
 import com.qa.automation.utils.java.utils.common.StringOprs;
 import com.qa.automation.utils.java.utils.exception.JavaException;
 
@@ -13,32 +11,34 @@ public class ProjectConfigProperties {
   private static final String PROJECT_CONFIG_PROPERTIES_FILE_DEFAULT_NAME = "project.config.properties";
   
   private static Properties properties = null;
-
+  
   private static StringOprs stringOprs = new StringOprs();
-  private static FileOprs fileOprs = new FileOprs();
-  private static JavaOprs javaOprs = new JavaOprs();
 
   static {
-    String projectDirectoryPath = javaOprs.getThisProjectDirectoryPath();
-    String configPropertiesFilePath = fileOprs.findFileAndGetAbsoluteFilePath(projectDirectoryPath, PROJECT_CONFIG_PROPERTIES_FILE_DEFAULT_NAME);
-    if (!stringOprs.isEmptyOrNull(configPropertiesFilePath)) {
-      addConfigPropertiesFile(configPropertiesFilePath);
-    } else {
-      new JavaException().catchException("No se encontró el archivo de propiedades de configuración <" + PROJECT_CONFIG_PROPERTIES_FILE_DEFAULT_NAME + "> en la ruta del proyecto <" + projectDirectoryPath + ">");
+    InputStream inputStream = ProjectConfigProperties.class.getResourceAsStream("/" + PROJECT_CONFIG_PROPERTIES_FILE_DEFAULT_NAME);
+    addConfigPropertiesFile(inputStream);
+  }
+  
+  public static void addConfigPropertiesFile(String configPropertiesFilePath) {
+    try {
+      InputStream inputStream = new FileInputStream(configPropertiesFilePath);
+      addConfigPropertiesFile(inputStream);
+    } 
+    catch (Exception e) {
+      new JavaException().throwException("No fue posible cargar el archivo de propiedades de configuración del proyecto", e, true);
     }
   }
 
-  public static void addConfigPropertiesFile(String configPropertiesFilePath) {
+  public static void addConfigPropertiesFile(InputStream inputStream) {
     if (ProjectConfigProperties.properties == null) ProjectConfigProperties.properties = new Properties();
     try {
-      InputStream inputStream = new FileInputStream(configPropertiesFilePath);
       Properties properties = new Properties();
       properties.load(inputStream);
       inputStream.close();
       ProjectConfigProperties.properties.putAll(properties);
     } 
     catch (Exception e) {
-      new JavaException().throwException("No fue posible cargar el archivo de propiedades de configuración <" + configPropertiesFilePath + ">", e, true);
+      new JavaException().throwException("No fue posible cargar el archivo de propiedades de configuración del proyecto", e, true);
     }
   }
   
