@@ -8,14 +8,14 @@ import com.qa.automation.utils.java.utils.exception.JavaException;
 
 public class ProjectConfigProperties {
   
-  private static final String PROJECT_CONFIG_PROPERTIES_FILE_DEFAULT_NAME = "project.config.properties";
+  private static final String PROJECT_CONFIG_PROPERTIES_FILE_DEFAULT_NAME = "/project.config.properties";
   
   private static Properties properties = null;
   
   private static StringOprs stringOprs = new StringOprs();
 
   static {
-    InputStream inputStream = ProjectConfigProperties.class.getResourceAsStream("/" + PROJECT_CONFIG_PROPERTIES_FILE_DEFAULT_NAME);
+    InputStream inputStream = ProjectConfigProperties.class.getResourceAsStream(PROJECT_CONFIG_PROPERTIES_FILE_DEFAULT_NAME);
     addConfigPropertiesFile(inputStream);
   }
   
