@@ -3,7 +3,7 @@ package com.qa.automation.utils.java.utils.params;
 import static com.qa.automation.utils.java.utils.params.ProjectConfigProperties.*;
 import com.qa.automation.utils.java.utils.os.CommonOsOprs;
 
-public class CommonParams {
+public class JavaUtilsParams {
 
   //PARAMS FROM PROJECT CONFIG PROPERTIES FILE (project.config.properties)
 

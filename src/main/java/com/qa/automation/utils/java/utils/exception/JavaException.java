@@ -3,7 +3,7 @@ package com.qa.automation.utils.java.utils.exception;
 import com.qa.automation.utils.java.utils.common.DialogWindowOprs;
 import com.qa.automation.utils.java.utils.common.StringOprs;
 import com.qa.automation.utils.java.utils.logger.LogManager;
-import com.qa.automation.utils.java.utils.params.CommonParams;
+import com.qa.automation.utils.java.utils.params.JavaUtilsParams;
 
 public class JavaException {
 
@@ -16,8 +16,8 @@ public class JavaException {
   }
 
   public void throwException(String message, Throwable e, Boolean endSystemRun) {
-    boolean showErrorMessageDialogByThrowException = CommonParams.SHOW_ERROR_MESSAGE_DIALOG_BY_THROW_EXCEPTION;
-    boolean endSystemRunByThrowException = (boolean) CommonParams.END_SYSTEM_RUN_BY_THROW_EXCEPTION;
+    boolean showErrorMessageDialogByThrowException = JavaUtilsParams.SHOW_ERROR_MESSAGE_DIALOG_BY_THROW_EXCEPTION;
+    boolean endSystemRunByThrowException = (boolean) JavaUtilsParams.END_SYSTEM_RUN_BY_THROW_EXCEPTION;
 
     String systemRunCompletionMessage = "";
     
@@ -94,7 +94,7 @@ public class JavaException {
   }
 
   public void catchException(String message, Throwable e) {
-    boolean showWarnMessageDialogByCatchException = CommonParams.SHOW_WARN_MESSAGE_DIALOG_BY_CATCH_EXCEPTION;
+    boolean showWarnMessageDialogByCatchException = JavaUtilsParams.SHOW_WARN_MESSAGE_DIALOG_BY_CATCH_EXCEPTION;
     StackTraceElement stackTraceElement = LOGGER.getStackTraceElement();
 
     if (stackTraceElement == null) {

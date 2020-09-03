@@ -18,7 +18,7 @@ import org.apache.commons.io.filefilter.DirectoryFileFilter;
 import org.apache.commons.io.filefilter.NotFileFilter;
 import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
-import com.qa.automation.utils.java.utils.params.CommonParams;
+import com.qa.automation.utils.java.utils.params.JavaUtilsParams;
 
 public class FileOprs extends FileUtils {
   
@@ -30,8 +30,8 @@ public class FileOprs extends FileUtils {
 
     StringOprs stringOprs = new StringOprs();
 
-    if ((!stringOprs.isEmptyOrNull(directoryPath)) && (!directoryPath.endsWith(CommonParams.PATH_SEPARATOR_CHAR))) {
-      directoryPath = directoryPath + CommonParams.PATH_SEPARATOR_CHAR;
+    if ((!stringOprs.isEmptyOrNull(directoryPath)) && (!directoryPath.endsWith(JavaUtilsParams.PATH_SEPARATOR_CHAR))) {
+      directoryPath = directoryPath + JavaUtilsParams.PATH_SEPARATOR_CHAR;
     }
     return directoryPath;
   }
@@ -40,8 +40,8 @@ public class FileOprs extends FileUtils {
 
     StringOprs stringOprs = new StringOprs();
 
-    if ((!stringOprs.isEmptyOrNull(directoryPath)) && (directoryPath.endsWith(CommonParams.PATH_SEPARATOR_CHAR))) {
-      directoryPath = directoryPath.substring( 0, directoryPath.lastIndexOf( CommonParams.PATH_SEPARATOR_CHAR ) );
+    if ((!stringOprs.isEmptyOrNull(directoryPath)) && (directoryPath.endsWith(JavaUtilsParams.PATH_SEPARATOR_CHAR))) {
+      directoryPath = directoryPath.substring( 0, directoryPath.lastIndexOf( JavaUtilsParams.PATH_SEPARATOR_CHAR ) );
     }
     return directoryPath;
   }
@@ -235,7 +235,7 @@ public class FileOprs extends FileUtils {
    */
   public String normalizePath ( String leftPath, String rightPath ) {
 
-    Path path = Paths.get(leftPath + CommonParams.PATH_SEPARATOR_CHAR + rightPath);
+    Path path = Paths.get(leftPath + JavaUtilsParams.PATH_SEPARATOR_CHAR + rightPath);
     String filePath = path.normalize().toString();
 
     if (existsFile(filePath)) {
@@ -364,7 +364,7 @@ public class FileOprs extends FileUtils {
   }
 
   public boolean checkIfPathStringIsFilePath ( String filePathString ) {
-    String regex = "(.+)(:" + CommonParams.PATH_SEPARATOR_CHAR + CommonParams.PATH_SEPARATOR_CHAR + ")?(.+)(\\.)([^" + CommonParams.PATH_SEPARATOR_CHAR + CommonParams.PATH_SEPARATOR_CHAR + "]+)";		
+    String regex = "(.+)(:" + JavaUtilsParams.PATH_SEPARATOR_CHAR + JavaUtilsParams.PATH_SEPARATOR_CHAR + ")?(.+)(\\.)([^" + JavaUtilsParams.PATH_SEPARATOR_CHAR + JavaUtilsParams.PATH_SEPARATOR_CHAR + "]+)";		
     return new StringOprs().evaluateRegex(regex, filePathString, false);
   }	
 
@@ -492,7 +492,7 @@ public class FileOprs extends FileUtils {
    */
   public String getFileNameWithoutExtensionFromFilePath ( String filePath ) {
     //return stringOprs.getStringWithRegex( "(.*)", filePath.substring( filePath.lastIndexOf( Parameters.PATH_SEPARATOR_CHAR.get() ) + 1 ) );
-    if (filePath.endsWith(CommonParams.PATH_SEPARATOR_CHAR)) {
+    if (filePath.endsWith(JavaUtilsParams.PATH_SEPARATOR_CHAR)) {
       filePath = filePath.substring(0, filePath.length() - 1);
     }
     return FilenameUtils.getBaseName(filePath);
@@ -505,7 +505,7 @@ public class FileOprs extends FileUtils {
    */
   public String getFileNameWithExtensionFromFilePath ( String filePath ) {
     //return filePath.substring( filePath.lastIndexOf( Parameters.PATH_SEPARATOR_CHAR.get() ) + 1 );
-    if (filePath.endsWith(CommonParams.PATH_SEPARATOR_CHAR)) {
+    if (filePath.endsWith(JavaUtilsParams.PATH_SEPARATOR_CHAR)) {
       filePath = filePath.substring(0, filePath.length() - 1);
     }
     return FilenameUtils.getName(filePath);
@@ -523,10 +523,10 @@ public class FileOprs extends FileUtils {
 
   public String getDirectoryPathFromFilePath ( String filePath ) {
     filePath = removeBackslashToEndOfDirectoryPath(filePath);
-    if (filePath.startsWith(CommonParams.PATH_SEPARATOR_CHAR)) {
+    if (filePath.startsWith(JavaUtilsParams.PATH_SEPARATOR_CHAR)) {
       filePath = filePath.substring( 1, filePath.length() );
     }
-    return filePath.substring( 0, filePath.lastIndexOf( CommonParams.PATH_SEPARATOR_CHAR ) + 1 );
+    return filePath.substring( 0, filePath.lastIndexOf( JavaUtilsParams.PATH_SEPARATOR_CHAR ) + 1 );
   }
 
   public String getParentDirectoryPathFromFilePath(String filePath) {

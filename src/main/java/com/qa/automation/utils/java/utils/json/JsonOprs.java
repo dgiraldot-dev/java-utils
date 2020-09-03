@@ -20,7 +20,7 @@ import com.google.gson.JsonParser;
 import com.qa.automation.utils.java.utils.common.FileOprs;
 import com.qa.automation.utils.java.utils.common.StringOprs;
 import com.qa.automation.utils.java.utils.exception.JavaException;
-import com.qa.automation.utils.java.utils.params.CommonParams;
+import com.qa.automation.utils.java.utils.params.JavaUtilsParams;
 
 public class JsonOprs {
 
@@ -39,7 +39,7 @@ public class JsonOprs {
     fileOprs.createDirectory(fileOprs.getDirectoryPathFromFilePath(jsonFilePath));
     Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
-    try (Writer writer = new OutputStreamWriter(new FileOutputStream(jsonFilePath), Charset.forName(CommonParams.CONTENT_ENCODING_TYPE))) {
+    try (Writer writer = new OutputStreamWriter(new FileOutputStream(jsonFilePath), Charset.forName(JavaUtilsParams.CONTENT_ENCODING_TYPE))) {
       writer.write(gson.toJson(jsonObject));
     } catch (Exception e) {
       new JavaException().catchException(e);

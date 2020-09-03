@@ -1,5 +1,6 @@
 package com.qa.automation.utils.java.utils.params;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.Properties;
@@ -8,30 +9,34 @@ import com.qa.automation.utils.java.utils.exception.JavaException;
 
 public class ProjectConfigProperties {
   
-  private static final String PROJECT_CONFIG_PROPERTIES_FILE_DEFAULT_NAME = "/project.config.properties";
+  private static final String PROJECT_CONFIG_PROPERTIES_FILE_NAME = "project.config.properties";
+  private static final String MAIN_RESOURCES_DIRECTORY_PATH = "src/main/resources/";
+  private static final String TEST_RESOURCES_DIRECTORY_PATH = "src/test/resources/";
   
   private static Properties properties = null;
   
   private static StringOprs stringOprs = new StringOprs();
 
   static {
-    InputStream inputStream = ProjectConfigProperties.class.getResourceAsStream(PROJECT_CONFIG_PROPERTIES_FILE_DEFAULT_NAME);
-    addConfigPropertiesFile(inputStream);
+    File file = new File(MAIN_RESOURCES_DIRECTORY_PATH + PROJECT_CONFIG_PROPERTIES_FILE_NAME);
+    if (!file.exists()) file = new File(TEST_RESOURCES_DIRECTORY_PATH + PROJECT_CONFIG_PROPERTIES_FILE_NAME);
+    addConfigPropertiesFile(file);
   }
   
   public static void addConfigPropertiesFile(String configPropertiesFilePath) {
     try {
-      InputStream inputStream = new FileInputStream(configPropertiesFilePath);
-      addConfigPropertiesFile(inputStream);
+      File configPropertiesFileObject = new File(configPropertiesFilePath);
+      addConfigPropertiesFile(configPropertiesFileObject);
     } 
     catch (Exception e) {
       new JavaException().throwException("No fue posible cargar el archivo de propiedades de configuración del proyecto", e, true);
     }
   }
 
-  public static void addConfigPropertiesFile(InputStream inputStream) {
+  public static void addConfigPropertiesFile(File configPropertiesFileObject) {
     if (ProjectConfigProperties.properties == null) ProjectConfigProperties.properties = new Properties();
     try {
+      InputStream inputStream = new FileInputStream(configPropertiesFileObject);
       Properties properties = new Properties();
       properties.load(inputStream);
       inputStream.close();
