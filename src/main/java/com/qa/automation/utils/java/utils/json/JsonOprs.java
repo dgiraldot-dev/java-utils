@@ -3,6 +3,7 @@ package com.qa.automation.utils.java.utils.json;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.nio.charset.Charset;
@@ -17,6 +18,9 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.jayway.jsonpath.Configuration;
+import com.jayway.jsonpath.DocumentContext;
+import com.jayway.jsonpath.JsonPath;
 import com.qa.automation.utils.java.utils.common.FileOprs;
 import com.qa.automation.utils.java.utils.common.StringOprs;
 import com.qa.automation.utils.java.utils.exception.JavaException;
@@ -342,5 +346,24 @@ public class JsonOprs {
     }
 
     return jsonObject;
+  }
+  
+  public DocumentContext getDocumentContext(String jsonFilePath) {
+
+    File jsonObjectFile = new File(jsonFilePath);
+
+    DocumentContext documentContext = null;
+
+    try {
+      documentContext = JsonPath.using(Configuration.defaultConfiguration()).parse(jsonObjectFile);
+    } catch (IOException e) {
+      new JavaException().catchException(e);
+    }
+
+    return documentContext;
+  }
+
+  public JsonObject getJsonObject(String jsonFileName) {
+    return JsonParser.parseString(new FileOprs().getFileContent(jsonFileName)).getAsJsonObject();
   }
 }
