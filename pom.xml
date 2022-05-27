@@ -7,7 +7,7 @@
 	<version>${project.version}</version>
 	<packaging>jar</packaging>
 	<properties>
-		<project.version>1.0.5</project.version>
+		<project.version>1.0.7</project.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.target>1.8</maven.compiler.target>
 		<maven.compiler.source>1.8</maven.compiler.source>

@@ -13,7 +13,7 @@ import com.qa.automation.utils.java.utils.exception.JavaException;
  */
 public class AsyncReceiver implements MessageListener, ExceptionListener {
 
-    private static String textMsg = "";
+    private static String textMsg = "/";
     
     public AsyncReceiver () {
 
