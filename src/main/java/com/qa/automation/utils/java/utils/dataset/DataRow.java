@@ -6,21 +6,21 @@ import com.qa.automation.utils.java.utils.json.JsonOprs;
 public class DataRow {
   
   private JsonOprs jsonOprs = new JsonOprs();  
-  private JsonObject dataRow;
+  private JsonObject dataRowJsonObject;
 
   public DataRow(JsonObject dataRow) {
-    this.dataRow = dataRow;
+    this.dataRowJsonObject = dataRow;
   }
   
   public String getDataValue(String columnName) {    
-    return dataRow.get(columnName).getAsString();
+    return dataRowJsonObject.get(columnName).getAsString();
   }
   
   public void printData() {
-    jsonOprs.printJsonObject(dataRow);
+    jsonOprs.printJsonObject(dataRowJsonObject);
   }
   
   public JsonObject getData() {
-    return dataRow;
+    return dataRowJsonObject;
   }
 }

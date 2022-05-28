@@ -107,7 +107,7 @@ public class LogManager implements Runnable {
   
   private void setDefaultLogFileName() {
     if (stringOprs.isEmptyOrNull(defaultLogFileName))
-      defaultLogFileName = new DateTimeOprs().getCurrentTime(EXECUTION_TIME_STAMP_FORMAT);
+      defaultLogFileName = DateTimeOprs.getCurrentTime(EXECUTION_TIME_STAMP_FORMAT);
   }
 
   private void setSystemProperties() {

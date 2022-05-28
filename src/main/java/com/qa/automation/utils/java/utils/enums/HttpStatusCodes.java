@@ -21,7 +21,7 @@ public enum HttpStatusCodes {
   INTERNAL_SERVER_ERROR(500),
   NOT_IMPLEMENTED(501);
   
-  public int code;
+  private int code;
 
   HttpStatusCodes(int code) {
     this.code = code;
