@@ -4,10 +4,14 @@ import com.google.gson.JsonObject;
 import com.qa.automation.utils.java.utils.common.FileOprs;
 import com.qa.automation.utils.java.utils.common.JavaOprs;
 import com.qa.automation.utils.java.utils.common.StringOprs;
-import com.qa.automation.utils.java.utils.exception.JavaException;
 import com.qa.automation.utils.java.utils.json.JsonOprs;
+import org.apache.log4j.Level;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 
 public class Dataset {
+
+    private static final Logger LOGGER = LogManager.getLogger(Dataset.class);
 
     private String excelDataFilePath;
     private FileOprs fileOprs = new FileOprs();
@@ -45,7 +49,7 @@ public class Dataset {
         }
 
         if (stringOprs.isEmptyOrNull(this.excelDataFilePath)) {
-            new JavaException().throwException("El archivo excel <" + excelDataFilePath + "> con los datos de prueba no existe");
+            LOGGER.log(Level.INFO, new StringBuilder("El archivo excel <").append(excelDataFilePath).append("> con los datos de prueba no existe").toString());
         }
     }
 
@@ -60,10 +64,6 @@ public class Dataset {
 
     public String getDataValue(String id, String columnName) {
         return datasetJsonObject.getAsJsonObject(id).get(columnName).getAsString();
-    }
-
-    public void printData() {
-        jsonOprs.printJsonObject(datasetJsonObject);
     }
 
     public JsonObject getData() {

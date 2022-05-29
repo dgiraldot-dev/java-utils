@@ -1,6 +1,5 @@
 package com.qa.automation.utils.java.utils.params;
 
-import com.qa.automation.utils.java.utils.exception.JavaException;
 import org.apache.log4j.Level;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
@@ -25,7 +24,7 @@ public class RuntimeParams {
         if (currentParamValue == null) {
             DYNAMIC_PARAMS.put(paramName, paramValue);
         } else {
-            new JavaException().catchException("Custom Parameter <" + paramName + "> already exists with value <" + currentParamValue + ">");
+            LOGGER.log(Level.WARN, "Custom Parameter <" + paramName + "> already exists with value <" + currentParamValue + ">");
         }
     }
 
@@ -34,7 +33,8 @@ public class RuntimeParams {
             DYNAMIC_PARAMS.put(paramName, paramValue);
         } else {
             printParamsList();
-            new JavaException().catchException("Custom Parameter <" + paramName + "> does not exist");
+            LOGGER.log(Level.ERROR, "Custom Parameter <" + paramName + "> does not exist");
+            System.exit(1);
         }
     }
 

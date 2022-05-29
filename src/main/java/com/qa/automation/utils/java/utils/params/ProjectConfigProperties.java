@@ -1,7 +1,9 @@
 package com.qa.automation.utils.java.utils.params;
 
 import com.qa.automation.utils.java.utils.common.StringOprs;
-import com.qa.automation.utils.java.utils.exception.JavaException;
+import org.apache.log4j.Level;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -9,6 +11,8 @@ import java.io.InputStream;
 import java.util.Properties;
 
 public class ProjectConfigProperties {
+
+    private static final Logger LOGGER = LogManager.getLogger(ProjectConfigProperties.class);
 
     private static final String PROJECT_CONFIG_PROPERTIES_FILE_NAME = "project.config.properties";
     private static final String MAIN_RESOURCES_DIRECTORY_PATH = "src/main/resources/";
@@ -31,20 +35,20 @@ public class ProjectConfigProperties {
             File configPropertiesFileObject = new File(configPropertiesFilePath);
             addConfigPropertiesFile(configPropertiesFileObject);
         } catch (Exception e) {
-            new JavaException().throwException("No fue posible cargar el archivo de propiedades de configuración del proyecto", e, true);
+            LOGGER.log(Level.ERROR, "No fue posible cargar el archivo de propiedades de configuración del proyecto");
+            System.exit(1);
         }
     }
 
     public static void addConfigPropertiesFile(File configPropertiesFileObject) {
         if (ProjectConfigProperties.properties == null) ProjectConfigProperties.properties = new Properties();
-        try {
-            InputStream inputStream = new FileInputStream(configPropertiesFileObject);
+        try (InputStream inputStream = new FileInputStream(configPropertiesFileObject)) {
             Properties properties = new Properties();
             properties.load(inputStream);
-            inputStream.close();
             ProjectConfigProperties.properties.putAll(properties);
         } catch (Exception e) {
-            new JavaException().throwException("No fue posible cargar el archivo de propiedades de configuración del proyecto", e, true);
+            LOGGER.log(Level.ERROR, "No fue posible cargar el archivo de propiedades de configuración del proyecto");
+            System.exit(1);
         }
     }
 
@@ -62,7 +66,8 @@ public class ProjectConfigProperties {
         if (!stringOprs.isEmptyOrNull(key)) key = key.trim();
         String value = properties == null ? null : properties.getProperty(key, "");
         if (stringOprs.isEmptyOrNull(value)) {
-            new JavaException().throwException("El parámetro de configuración del proyecto <" + key + "> no existe");
+            LOGGER.log(Level.WARN, "El parámetro de configuración del proyecto <" + key + "> no existe");
+            System.exit(1);
         }
         return value == null ? null : value.trim();
     }

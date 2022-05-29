@@ -3,8 +3,6 @@ package com.qa.automation.utils.java.utils.os;
 import com.qa.automation.utils.java.utils.common.FileOprs;
 import com.qa.automation.utils.java.utils.common.JavaOprs;
 import com.qa.automation.utils.java.utils.common.StringOprs;
-import com.qa.automation.utils.java.utils.exception.JavaException;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -38,7 +36,6 @@ public class WindowsOsOprs {
         try {
             return Runtime.getRuntime().exec(command);
         } catch (IOException e) {
-            new JavaException().catchException(e);
             return null;
         }
     }
@@ -53,10 +50,8 @@ public class WindowsOsOprs {
             process = processBuilder.start();
             process.waitFor();
             processInputStream = getProcessInputStream(process.getInputStream());
-        } catch (IOException e) {
-            new JavaException().catchException(e);
-        } catch (InterruptedException e) {
-            new JavaException().catchException(e);
+        } catch (IOException|InterruptedException e) {
+            Thread.currentThread().interrupt();
         }
 
         return processInputStream;
@@ -68,10 +63,10 @@ public class WindowsOsOprs {
         String output = null;
         try {
             while ((bytesRead = inputStream.read(bytes)) > -1) {
-                output = output + new String(bytes, 0, bytesRead);
+                output = new StringBuilder(output).append(new String(bytes, 0, bytesRead)).toString();
             }
         } catch (IOException e) {
-            new JavaException().catchException(e);
+            // Nothing
         }
         return output;
     }
@@ -85,7 +80,7 @@ public class WindowsOsOprs {
         try {
             hostName = InetAddress.getLocalHost().getHostName();
         } catch (UnknownHostException e) {
-            new JavaException().catchException(e);
+            // Nothing
         }
 
         return hostName;
@@ -96,7 +91,7 @@ public class WindowsOsOprs {
         InputStreamReader isr = null;
         BufferedReader br = null;
 
-        List<String> command = new ArrayList<String>();
+        List<String> command = new ArrayList<>();
         command.add("WMIC");
         command.add("process");
         command.add("list");
@@ -138,7 +133,7 @@ public class WindowsOsOprs {
             }
             input.close();
         } catch (Exception e) {
-            new JavaException().catchException(e);
+            // Nothing
         }
     }
 
@@ -152,7 +147,7 @@ public class WindowsOsOprs {
                 contador = contador + 1;
             }
         } catch (Exception e) {
-            new JavaException().catchException(e);
+            // Nothing
         }
     }
 
@@ -166,7 +161,7 @@ public class WindowsOsOprs {
                 contador = contador + 1;
             }
         } catch (Exception e) {
-
+            // Nothing
         }
     }
 
@@ -195,15 +190,18 @@ public class WindowsOsOprs {
             try {
                 socket.close();
             } catch (IOException e) {
+                // Nothing
             }
             releaseSystemPort(String.valueOf(systemPort));
             return String.valueOf(systemPort);
         } catch (IOException e) {
+            // Nothing
         } finally {
             if (socket != null) {
                 try {
                     socket.close();
                 } catch (IOException e) {
+                    // Nothing
                 }
             }
         }

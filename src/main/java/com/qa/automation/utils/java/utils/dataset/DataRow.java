@@ -15,11 +15,7 @@ public class DataRow {
   public String getDataValue(String columnName) {    
     return dataRowJsonObject.get(columnName).getAsString();
   }
-  
-  public void printData() {
-    jsonOprs.printJsonObject(dataRowJsonObject);
-  }
-  
+
   public JsonObject getData() {
     return dataRowJsonObject;
   }

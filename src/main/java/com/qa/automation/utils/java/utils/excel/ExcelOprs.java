@@ -3,22 +3,18 @@ package com.qa.automation.utils.java.utils.excel;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.qa.automation.utils.java.utils.common.StringOprs;
-import com.qa.automation.utils.java.utils.exception.JavaException;
 import org.apache.log4j.Level;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-
 import javax.sql.rowset.CachedRowSet;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-
-import static org.junit.Assert.assertTrue;
 
 public class ExcelOprs {
 
@@ -57,7 +53,6 @@ public class ExcelOprs {
             workbook = new XSSFWorkbook(fileInputStream);
             return workbook;
         } catch (Exception e) {
-            new JavaException().catchException(e);
             return null;
         }
     }
@@ -72,7 +67,7 @@ public class ExcelOprs {
             workbook.write(fileOutputStream);
             closeWorkbook();
         } catch (Exception e) {
-            new JavaException().catchException(e);
+            // Nothing
         }
     }
 
@@ -83,7 +78,7 @@ public class ExcelOprs {
             if (workbook != null) workbook.close();
             resetAttributes();
         } catch (Exception e) {
-            new JavaException().catchException(e);
+            // Nothing
         }
     }
 
@@ -225,128 +220,47 @@ public class ExcelOprs {
 
         } catch (SQLException e) {
             closeWorkbook();
-            new JavaException().catchException(e);
         }
     }
 
+    private boolean sheetNumberValidation = true;
+    private boolean sheetNamesValidation = true;
+    private boolean rowNumberValidation = true;
+    private boolean columnNumberValidation = true;
+    private boolean cellValueValidation = true;
+    private boolean comparationStatus = true;
+
+    private JsonObject workbookJsonObjectOne;
+    private Object[] sheetsOne;
+    String sheetNameOne;
+
+    private JsonObject workbookJsonObjectTwo;
+    private Object[] sheetsTwo;
+    String sheetNameTwo;
+
     public boolean compareExcelFiles(String expectedFilePath, String actualFilePath) {
-
-        StringOprs stringOprs = new StringOprs();
-
         LOGGER.log(Level.INFO, new StringBuilder("Comparando contenido de archivos excel: expectedFilePath: ").append(expectedFilePath).append(" | actualFilePath: ").append(actualFilePath).toString());
 
-        JsonObject workbookJsonObject01 = loadWorkbookToJsonObject(expectedFilePath);
-        JsonObject workbookJsonObject02 = loadWorkbookToJsonObject(actualFilePath);
-        Object[] sheets01 = workbookJsonObject01.keySet().toArray();
-        Object[] sheets02 = workbookJsonObject02.keySet().toArray();
+        workbookJsonObjectOne = loadWorkbookToJsonObject(expectedFilePath);
+        workbookJsonObjectTwo = loadWorkbookToJsonObject(actualFilePath);
 
-        boolean sheetNumberValidation = true;
-        boolean sheetNamesValidation = true;
-        boolean rowNumberValidation = true;
-        boolean columnNumberValidation = true;
-        boolean cellValueValidation = true;
-        boolean comparationStatus = true;
+        sheetsOne = workbookJsonObjectOne.keySet().toArray();
+        sheetsTwo = workbookJsonObjectTwo.keySet().toArray();
 
         // Number of sheets
-        int numberOfSheets01 = sheets01.length;
-        int numberOfSheets02 = sheets02.length;
-
-        sheetNumberValidation = (numberOfSheets01 == numberOfSheets02);
-        if (!sheetNumberValidation) {
-            comparationStatus = false;
-            sheetNamesValidation = false;
-            rowNumberValidation = false;
-            columnNumberValidation = false;
-            cellValueValidation = false;
-        }
+        validateNumberOfSheets(sheetsOne, sheetsTwo);
 
         // Sheets names
-        String sheetName01;
-        String sheetName02;
-
-        if (comparationStatus) {
-            for (int i = 0; i < sheets01.length; i++) {
-                sheetName01 = (String) sheets01[i];
-                sheetName02 = (String) sheets02[i];
-                if (sheetNamesValidation && (!sheetName01.equalsIgnoreCase(sheetName02))) {
-                    comparationStatus = false;
-                    sheetNamesValidation = false;
-                    rowNumberValidation = false;
-                    columnNumberValidation = false;
-                    cellValueValidation = false;
-                }
-            }
-        }
+        validateSheetNames();
 
         // Number of rows
-        int numberOfRows01;
-        int numberOfRows02;
-
-        if (comparationStatus) {
-            for (int i = 0; i < sheets01.length; i++) {
-                sheetName01 = (String) sheets01[i];
-                sheetName02 = (String) sheets02[i];
-                numberOfRows01 = workbookJsonObject01.get(sheetName01).getAsJsonArray().size();
-                numberOfRows02 = workbookJsonObject02.get(sheetName02).getAsJsonArray().size();
-                if (rowNumberValidation && (numberOfRows01 != numberOfRows02)) {
-                    comparationStatus = false;
-                    rowNumberValidation = false;
-                    columnNumberValidation = false;
-                    cellValueValidation = false;
-                }
-            }
-        }
+        validateNumberOfRows();
 
         // Number of columns
-        int numberOfColumns01;
-        int numberOfColumns02;
-
-        if (comparationStatus) {
-            for (int i = 0; i < sheets01.length; i++) {
-                sheetName01 = (String) sheets01[i];
-                sheetName02 = (String) sheets02[i];
-                JsonArray sheet01 = workbookJsonObject01.get(sheetName01).getAsJsonArray();
-                JsonArray sheet02 = workbookJsonObject02.get(sheetName02).getAsJsonArray();
-                numberOfColumns01 = 0;
-                numberOfColumns02 = 0;
-                for (int j = 0; j < sheet01.size(); j++) {
-                    int numberOfRowColumns01 = sheet01.get(j).getAsJsonArray().size();
-                    int numberOfRowColumns02 = sheet02.get(j).getAsJsonArray().size();
-                    if (numberOfRowColumns01 > numberOfColumns01) numberOfColumns01 = numberOfRowColumns01;
-                    if (numberOfRowColumns02 > numberOfColumns02) numberOfColumns02 = numberOfRowColumns02;
-                    if (columnNumberValidation && (numberOfColumns01 != numberOfColumns02)) {
-                        comparationStatus = false;
-                        columnNumberValidation = false;
-                        cellValueValidation = false;
-                    }
-                }
-            }
-        }
+        validateNumberOfColumns();
 
         // Cell values
-        if (comparationStatus) {
-            for (int i = 0; i < sheets01.length; i++) {
-                sheetName01 = (String) sheets01[i];
-                sheetName02 = (String) sheets02[i];
-                JsonArray sheet01 = workbookJsonObject01.get(sheetName01).getAsJsonArray();
-                JsonArray sheet02 = workbookJsonObject02.get(sheetName02).getAsJsonArray();
-                for (int j = 0; j < sheet01.size(); j++) {
-                    JsonArray row01 = sheet01.get(j).getAsJsonArray();
-                    JsonArray row02 = sheet02.get(j).getAsJsonArray();
-                    for (int k = 0; k < row01.size(); k++) {
-                        JsonObject cell01 = row01.get(k).getAsJsonObject();
-                        JsonObject cell02 = row02.get(k).getAsJsonObject();
-                        String cellValue01 = cell01.get(CELL_VALUE).getAsString();
-                        String cellValue02 = cell02.get(CELL_VALUE).getAsString();
-                        String cellFillColor01 = cell01.get(CELL_FILL_COLOR).getAsString();
-                        if (((!cellValue01.equalsIgnoreCase(cellValue02)) && (stringOprs.isEmptyOrNull(cellFillColor01) || cellFillColor01.equalsIgnoreCase("FFFFFFFF"))) && (cellValueValidation)) {
-                            comparationStatus = false;
-                            cellValueValidation = false;
-                        }
-                    }
-                }
-            }
-        }
+        validateCellValues();
 
         workbookJsonObject = null;
 
@@ -361,8 +275,112 @@ public class ExcelOprs {
         return comparationStatus;
     }
 
-    public void assertExcelFilesEquals(String expectedFilePath, String actualFilePath) {
-        assertTrue("Assert Excel Files Equals", compareExcelFiles(expectedFilePath, actualFilePath));
+    private void validateNumberOfSheets(Object[] sheetsOne, Object[] sheetsTwo) {
+        int numberOfSheets01 = sheetsOne.length;
+        int numberOfSheets02 = sheetsTwo.length;
+
+        sheetNumberValidation = (numberOfSheets01 == numberOfSheets02);
+        if (!sheetNumberValidation) {
+            comparationStatus = false;
+            sheetNamesValidation = false;
+            rowNumberValidation = false;
+            columnNumberValidation = false;
+            cellValueValidation = false;
+        }
+    }
+
+    private void validateSheetNames() {
+        if (comparationStatus) {
+            for (int i = 0; i < sheetsOne.length; i++) {
+                sheetNameOne = (String) sheetsOne[i];
+                sheetNameTwo = (String) sheetsTwo[i];
+                if (sheetNamesValidation && (!sheetNameOne.equalsIgnoreCase(sheetNameTwo))) {
+                    comparationStatus = false;
+                    sheetNamesValidation = false;
+                    rowNumberValidation = false;
+                    columnNumberValidation = false;
+                    cellValueValidation = false;
+                }
+            }
+        }
+    }
+
+    private void validateNumberOfRows() {
+        int numberOfRowsOne;
+        int numberOfRowsTwo;
+
+        if (comparationStatus) {
+            for (int i = 0; i < sheetsOne.length; i++) {
+                sheetNameOne = (String) sheetsOne[i];
+                sheetNameTwo = (String) sheetsTwo[i];
+                numberOfRowsOne = workbookJsonObjectOne.get(sheetNameOne).getAsJsonArray().size();
+                numberOfRowsTwo = workbookJsonObjectTwo.get(sheetNameTwo).getAsJsonArray().size();
+                if (rowNumberValidation && (numberOfRowsOne != numberOfRowsTwo)) {
+                    comparationStatus = false;
+                    rowNumberValidation = false;
+                    columnNumberValidation = false;
+                    cellValueValidation = false;
+                }
+            }
+        }
+    }
+
+    private int numberOfColumnsOne = 0;
+    private int numberOfColumnsTwo = 0;
+
+    private void validateNumberOfColumns() {
+        if (comparationStatus) {
+            for (int i = 0; i < sheetsOne.length; i++) {
+                sheetNameOne = (String) sheetsOne[i];
+                sheetNameTwo = (String) sheetsTwo[i];
+                JsonArray sheetOne = workbookJsonObjectOne.get(sheetNameOne).getAsJsonArray();
+                JsonArray sheetTwo = workbookJsonObjectTwo.get(sheetNameTwo).getAsJsonArray();
+
+                validateNumberOfColumnsInSheet(sheetOne, sheetTwo);
+            }
+        }
+    }
+
+    private void validateNumberOfColumnsInSheet(JsonArray sheetOne, JsonArray sheetTwo) {
+        for (int j = 0; j < sheetOne.size(); j++) {
+            int numberOfRowColumns01 = sheetOne.get(j).getAsJsonArray().size();
+            int numberOfRowColumns02 = sheetTwo.get(j).getAsJsonArray().size();
+            if (numberOfRowColumns01 > numberOfColumnsOne) numberOfColumnsOne = numberOfRowColumns01;
+            if (numberOfRowColumns02 > numberOfColumnsTwo) numberOfColumnsTwo = numberOfRowColumns02;
+            if (columnNumberValidation && (numberOfColumnsOne != numberOfColumnsTwo)) {
+                comparationStatus = false;
+                columnNumberValidation = false;
+                cellValueValidation = false;
+            }
+        }
+    }
+
+    private void validateCellValues() {
+        if (comparationStatus) {
+            for (int i = 0; i < sheetsOne.length; i++) {
+                sheetNameOne = (String) sheetsOne[i];
+                sheetNameTwo = (String) sheetsTwo[i];
+                JsonArray sheet01 = workbookJsonObjectOne.get(sheetNameOne).getAsJsonArray();
+                JsonArray sheet02 = workbookJsonObjectTwo.get(sheetNameTwo).getAsJsonArray();
+                for (int j = 0; j < sheet01.size(); j++) {
+                    validateCellValuesInSheet(sheet01.get(j).getAsJsonArray(), sheet02.get(j).getAsJsonArray());
+                }
+            }
+        }
+    }
+
+    private void validateCellValuesInSheet(JsonArray rowOne, JsonArray rowTwo) {
+        for (int k = 0; k < rowOne.size(); k++) {
+            JsonObject cell01 = rowOne.get(k).getAsJsonObject();
+            JsonObject cell02 = rowTwo.get(k).getAsJsonObject();
+            String cellValue01 = cell01.get(CELL_VALUE).getAsString();
+            String cellValue02 = cell02.get(CELL_VALUE).getAsString();
+            String cellFillColor01 = cell01.get(CELL_FILL_COLOR).getAsString();
+            if (((!cellValue01.equalsIgnoreCase(cellValue02)) && (new StringOprs().isEmptyOrNull(cellFillColor01) || cellFillColor01.equalsIgnoreCase("FFFFFFFF"))) && (cellValueValidation)) {
+                comparationStatus = false;
+                cellValueValidation = false;
+            }
+        }
     }
 
     public JsonObject loadWorkbookToJsonObject(String filePath) {

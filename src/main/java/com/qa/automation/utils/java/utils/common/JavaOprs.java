@@ -9,11 +9,7 @@ public class JavaOprs {
     }
 
     public void sleepInSeconds(long seconds) {
-        try {
-            Thread.sleep(TimeUnit.SECONDS.toMillis(seconds));
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-        }
+        sleepInMilliseconds(TimeUnit.SECONDS.toMillis(seconds));
     }
 
     public void sleepInMilliseconds(long milliseconds) {
@@ -22,11 +18,6 @@ public class JavaOprs {
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }
-    }
-
-    public void runGarbageColletor() {
-        System.gc();
-        Runtime.getRuntime().gc();
     }
 
     public Boolean checkIfExistClassPath(String classPath) {

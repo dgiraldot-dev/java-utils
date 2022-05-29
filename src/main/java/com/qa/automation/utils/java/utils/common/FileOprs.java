@@ -542,7 +542,7 @@ public class FileOprs extends FileUtils {
      * ayudar a tomar decisiones sobre la creación.
      *
      * @param directoryPath (<code>String</code>) Cadena con la carpeta a ser explorada.
-     * @return (< code > int < / code >) cantidad de archivos en la carpeta especificada. Devolverá 999999999 en caso de que se
+     * @return (<code> int </code>) cantidad de archivos en la carpeta especificada. Devolverá 999999999 en caso de que se
      * haya pasado una carpeta inexistente.
      * @see #countFilesInDirectory ( String rutaCarpeta, boolean esRecursivo )
      */
@@ -556,7 +556,7 @@ public class FileOprs extends FileUtils {
      *
      * @param directoryPath (<code>String</code>) Cadena con la carpeta a ser explorada.
      * @param isRecursive   (<code>boolean</code>) indica si se desea exploración recursiva (dentro de otras carpetas).
-     * @return (< code > int < / code >) cantidad de archivos en la carpeta especificada.
+     * @return (<code> int </code>) cantidad de archivos en la carpeta especificada.
      */
     public int countFilesInDirectory(String directoryPath, boolean isRecursive) {
         File f = new File(directoryPath);

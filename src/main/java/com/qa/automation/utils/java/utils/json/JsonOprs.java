@@ -6,8 +6,10 @@ import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
 import com.qa.automation.utils.java.utils.common.FileOprs;
 import com.qa.automation.utils.java.utils.common.StringOprs;
-import com.qa.automation.utils.java.utils.exception.JavaException;
 import com.qa.automation.utils.java.utils.params.JavaUtilsParams;
+import org.apache.log4j.Level;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
@@ -18,6 +20,8 @@ import java.util.List;
 import java.util.Map;
 
 public class JsonOprs {
+
+    private static final Logger LOGGER = LogManager.getLogger(JsonOprs.class);
 
     private FileInputStream fileInputStream;
     private Workbook workbook;
@@ -37,7 +41,7 @@ public class JsonOprs {
         try (Writer writer = new OutputStreamWriter(new FileOutputStream(jsonFilePath), Charset.forName(JavaUtilsParams.CONTENT_ENCODING_TYPE))) {
             writer.write(gson.toJson(jsonObject));
         } catch (Exception e) {
-            new JavaException().catchException(e);
+            // Nothing
         }
     }
 
@@ -66,8 +70,7 @@ public class JsonOprs {
     }
 
     public JsonObject stringToJsonObject(String jsonString) {
-        JsonObject jsonObject = JsonParser.parseString(jsonString).getAsJsonObject();
-        return jsonObject;
+        return JsonParser.parseString(jsonString).getAsJsonObject();
     }
 
     public String jsonObjectToString(JsonObject jsonObject) {
@@ -76,8 +79,7 @@ public class JsonOprs {
 
     public JsonArray stringToJsonArray(String jsonArrayString) {
         JsonElement jsonElement = JsonParser.parseString(jsonArrayString);
-        JsonArray jsonArray = jsonElement.getAsJsonArray();
-        return jsonArray;
+        return jsonElement.getAsJsonArray();
     }
 
     public JsonArray stringArrayListToJsonArray(List<String> arrayList) {
@@ -97,22 +99,6 @@ public class JsonOprs {
     public String mapToJsonString(Map<String, Object> map) {
         Gson gson = new Gson();
         return gson.toJson(map);
-    }
-
-    public void printJsonString(String jsonString) {
-        System.out.println(formatJsonString(jsonString));
-    }
-
-    public void printJsonObject(JsonObject jsonObject) {
-        System.out.println(formatJsonObject(jsonObject));
-    }
-
-    public void printJsonArrayObject(JsonArray jsonArrayObject) {
-        System.out.println(formatJsonArrayObject(jsonArrayObject));
-    }
-
-    public void printJsonArrayString(String jsonArrayString) {
-        printJsonArrayObject(stringToJsonArray(jsonArrayString));
     }
 
     public boolean existStringInStringsJsonArray(String string, JsonArray jsonArray) {
@@ -139,7 +125,7 @@ public class JsonOprs {
             fileInputStream = new FileInputStream(new File(excelDataFilePath));
             workbook = new XSSFWorkbook(fileInputStream);
         } catch (Exception e) {
-            new JavaException().catchException(e);
+            // Nothing
         }
 
         int numberOfSheets = workbook.getNumberOfSheets();
@@ -157,7 +143,7 @@ public class JsonOprs {
             fileInputStream.close();
             workbook.close();
         } catch (Exception e) {
-            new JavaException().catchException(e);
+            // Nothing
         }
 
         return jsonObject;
@@ -174,7 +160,7 @@ public class JsonOprs {
             fileInputStream = new FileInputStream(new File(excelDataFilePath));
             workbook = new XSSFWorkbook(fileInputStream);
         } catch (Exception e) {
-            new JavaException().catchException(e);
+            // Nothing
         }
 
         Sheet sheet = workbook.getSheet(excelSheetName);
@@ -185,7 +171,7 @@ public class JsonOprs {
             fileInputStream.close();
             workbook.close();
         } catch (Exception e) {
-            new JavaException().catchException(e);
+            // Nothing
         }
 
         return jsonObject;
@@ -216,14 +202,15 @@ public class JsonOprs {
                     for (Cell cell : row) {
                         cellValue = formatter.formatCellValue(cell).trim();
                         columnNames.addProperty(Integer.toString(cell.getColumnIndex()), cellValue);
-                        if (cellValue != "") {
+                        if (!cellValue.equals("")) {
                             columnNames.addProperty(Integer.toString(cell.getColumnIndex()), cellValue);
                             columnValues = new JsonArray();
 
                             if (jsonObject.get(cellValue) == null) {
                                 jsonObject.add(cellValue, columnValues);
                             } else {
-                                new JavaException().throwException("El nombre de columna <" + cellValue + "> ubicado en la columna número <" + (cell.getColumnIndex() + 1) + "> se encuentra repetido.", true);
+                                LOGGER.log(Level.INFO, "El nombre de columna <" + cellValue + "> ubicado en la columna número <" + (cell.getColumnIndex() + 1) + "> se encuentra repetido.");
+                                System.exit(1);
                             }
 
                             maxColumnIndex = maxColumnIndex + 1;
@@ -239,14 +226,14 @@ public class JsonOprs {
                             columnName = columnNames.get(Integer.toString(i)).getAsString();
                             cellValue = formatter.formatCellValue(cell);
 
-                            if (trimCellValues == true) {
+                            if (trimCellValues) {
                                 cellValue = cellValue.trim();
                             }
 
                             if (!stringOprs.isEmptyOrNull(cellValue) && !existStringInStringsJsonArray(cellValue, jsonObject.get(columnName).getAsJsonArray())) {
                                 jsonObject.get(columnName).getAsJsonArray().add(cellValue);
                             } else if (!stringOprs.isEmptyOrNull(cellValue)) {
-                                System.out.println("El dato <" + cellValue + "> ubicado en la fila número <" + (cell.getRowIndex() + 1) + "> se encuentra repetido en la columna <" + columnName + ">, se tendrá en cuenta una sola ocurrencia.");
+                                LOGGER.log(Level.WARN, "El dato <" + cellValue + "> ubicado en la fila número <" + (cell.getRowIndex() + 1) + "> se encuentra repetido en la columna <" + columnName + ">, se tendrá en cuenta una sola ocurrencia.");
                             }
                         } else {
                             break;
@@ -268,14 +255,14 @@ public class JsonOprs {
     public JsonObject excelFileSheetToJsonObjecttWithUniqueFirstColumnValueKeyByRow(String excelDataFilePath, String excelSheetName, boolean trimCellValues) {
         JsonObject jsonObject = new JsonObject();
         JsonObject columnNames = new JsonObject();
-        JsonObject record = null;
+        JsonObject recordJsonObject = null;
         int maxColumnIndex = -1;
 
         try {
             fileInputStream = new FileInputStream(new File(excelDataFilePath));
             workbook = new XSSFWorkbook(fileInputStream);
         } catch (Exception e) {
-            new JavaException().catchException(e);
+            // Nothing
         }
 
         Sheet sheet = workbook.getSheet(excelSheetName);
@@ -283,18 +270,18 @@ public class JsonOprs {
 
         while (iterator.hasNext()) {
             Row row = iterator.next();
-            record = new JsonObject();
+            recordJsonObject = new JsonObject();
             String key = null;
 
             String columnName;
             String cellValue;
 
-            if (formatter.formatCellValue(row.getCell(0)) != "") {
+            if (!formatter.formatCellValue(row.getCell(0)).equals("")) {
                 if (row.getRowNum() == 0) { // Columnas
                     for (Cell cell : row) {
                         cellValue = formatter.formatCellValue(cell).trim();
                         columnNames.addProperty(Integer.toString(cell.getColumnIndex()), cellValue);
-                        if (cellValue != "") {
+                        if (!cellValue.equals("")) {
                             columnNames.addProperty(Integer.toString(cell.getColumnIndex()), cellValue);
                             maxColumnIndex = maxColumnIndex + 1;
                         } else {
@@ -312,17 +299,17 @@ public class JsonOprs {
                             if (i == 0) { // Key
                                 key = cellValue;
                             } else {
-                                if (trimCellValues == true) {
+                                if (trimCellValues) {
                                     cellValue = cellValue.trim();
                                 }
-                                record.addProperty(columnName, cellValue);
+                                recordJsonObject.addProperty(columnName, cellValue);
                             }
                         } else {
                             break;
                         }
                     }
 
-                    jsonObject.add(key, record);
+                    jsonObject.add(key, recordJsonObject);
                 }
             } else {
                 break;
@@ -333,7 +320,7 @@ public class JsonOprs {
             fileInputStream.close();
             workbook.close();
         } catch (Exception e) {
-            new JavaException().catchException(e);
+            // Nothing
         }
 
         return jsonObject;
@@ -348,7 +335,7 @@ public class JsonOprs {
         try {
             documentContext = JsonPath.using(Configuration.defaultConfiguration()).parse(jsonObjectFile);
         } catch (IOException e) {
-            new JavaException().catchException(e);
+            // Nothing
         }
 
         return documentContext;
