@@ -1,6 +1,6 @@
 package com.qa.automation.utils.java.utils.params;
 
-import org.apache.log4j.Level;
+import com.qa.automation.utils.java.utils.exception.GenericRuntimeException;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
@@ -24,7 +24,7 @@ public class RuntimeParams {
         if (currentParamValue == null) {
             DYNAMIC_PARAMS.put(paramName, paramValue);
         } else {
-            LOGGER.log(Level.WARN, "Custom Parameter <" + paramName + "> already exists with value <" + currentParamValue + ">");
+            LOGGER.warn("Custom Parameter <" + paramName + "> already exists with value <" + currentParamValue + ">");
         }
     }
 
@@ -33,8 +33,7 @@ public class RuntimeParams {
             DYNAMIC_PARAMS.put(paramName, paramValue);
         } else {
             printParamsList();
-            LOGGER.log(Level.ERROR, "Custom Parameter <" + paramName + "> does not exist");
-            System.exit(1);
+            throw new GenericRuntimeException("Custom Parameter <" + paramName + "> does not exist");
         }
     }
 
@@ -43,8 +42,8 @@ public class RuntimeParams {
     }
 
     public static void printParamsList() {
-        LOGGER.log(Level.INFO, "***** CURRENT CUSTOM PARAMS LIST ----------------------------------------------------------------------------------------------------------------------------\r\n");
-        DYNAMIC_PARAMS.forEach((key, value) -> LOGGER.log(Level.INFO, key + " = " + value));
-        LOGGER.log(Level.INFO, "\r\n***** -------------------------------------------------------------------------------------------------------------------------------------------------------");
+        LOGGER.info("***** CURRENT CUSTOM PARAMS LIST ----------------------------------------------------------------------------------------------------------------------------\r\n");
+        DYNAMIC_PARAMS.forEach((key, value) -> LOGGER.info(key + " = " + value));
+        LOGGER.info("\r\n***** -------------------------------------------------------------------------------------------------------------------------------------------------------");
     }
 }

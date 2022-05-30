@@ -1,5 +1,6 @@
 package com.qa.automation.utils.java.utils.common;
 
+import com.qa.automation.utils.java.utils.exception.GenericRuntimeException;
 import com.qa.automation.utils.java.utils.params.JavaUtilsParams;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
@@ -200,7 +201,7 @@ public class FileOprs extends FileUtils {
             bufferedWriter.write(content);
             bufferedWriter.flush();
         } catch (IOException e) {
-            // Nothing
+            throw new GenericRuntimeException(e);
         }
     }
 
@@ -583,8 +584,23 @@ public class FileOprs extends FileUtils {
             try {
                 Desktop.getDesktop().open(new File(filePath));
             } catch (IOException e) {
-                e.printStackTrace();
+                throw new GenericRuntimeException(e);
             }
         }
+    }
+
+    public String tryFindFileAndReturnPath(String filePath) {
+        StringOprs stringOprs = new StringOprs();
+        JavaOprs javaOprs = new JavaOprs();
+
+        String response = null;
+
+        if (stringOprs.isEmptyOrNull(checkIfExistsFileAndGetAbsolutePath(filePath))) {
+            response = findFileAndGetAbsoluteFilePath(javaOprs.getThisProjectDirectoryPath(), filePath);
+        } else {
+            response = filePath;
+        }
+
+        return response;
     }
 }

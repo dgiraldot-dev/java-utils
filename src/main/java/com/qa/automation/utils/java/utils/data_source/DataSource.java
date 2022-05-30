@@ -12,9 +12,8 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.qa.automation.utils.java.utils.common.FileOprs;
-import org.apache.log4j.Level;
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+import com.qa.automation.utils.java.utils.common.StringOprs;
+import com.qa.automation.utils.java.utils.exception.GenericRuntimeException;
 import org.apache.poi.ss.usermodel.*;
 
 import java.io.FileOutputStream;
@@ -26,7 +25,6 @@ import java.util.List;
 import static org.apache.poi.ss.usermodel.Row.MissingCellPolicy.CREATE_NULL_AS_BLANK;
 
 public class DataSource {
-    private static final Logger LOGGER = LogManager.getLogger(DataSource.class);
 
     private String filePath;
     private String directoryPath;
@@ -55,7 +53,7 @@ public class DataSource {
     public DataSource(String filePath, String sheetName) {
         FileOprs fileOprs = new FileOprs();
 
-        this.filePath = filePath;
+        tryFindDataSourceFileAndReturnPath(filePath);
         this.directoryPath = fileOprs.getDirectoryPathFromFilePath(filePath);
         this.fileName = fileOprs.getFileNameWithoutExtensionFromFilePath(filePath);
         this.fileExtension = fileOprs.getFileExtensionFromFilePath(filePath);
@@ -175,7 +173,7 @@ public class DataSource {
                 workbook.write(fileOutputStream);
                 fileOutputStream.close();
             } catch (Exception e) {
-                LOGGER.log(Level.INFO, e.getMessage());
+                throw new GenericRuntimeException(e);
             }
         }
     }
@@ -207,18 +205,29 @@ public class DataSource {
 
     private void buildColumnNameListObjects(Row headerRow, Iterator<Row> iterator) {
         for (Cell headerCell : headerRow) {
+
+            String headerCellValue = headerCell.getStringCellValue().trim();
+
+            checkIfHeaderCellValueIsDuplicated(headerCellValue);
+
             if (!dataFormatter.formatCellValue(headerCell).trim().equals("")) {
                 if (cellFillColorCodeIsWhite(headerCell)) {
                     if (headerCell.getColumnIndex() > 0)
-                        filteredPropertyList.add(headerCell.getStringCellValue().trim());
-                    filteredColumnNameList.add(headerCell.getStringCellValue().trim());
+                        filteredPropertyList.add(headerCellValue);
+                    filteredColumnNameList.add(headerCellValue);
                 }
-                if (headerCell.getColumnIndex() > 0) fullPropertyList.add(headerCell.getStringCellValue().trim());
-                fullColumnNameList.add(headerCell.getStringCellValue().trim());
+                if (headerCell.getColumnIndex() > 0) fullPropertyList.add(headerCellValue);
+                fullColumnNameList.add(headerCellValue);
             }
         }
 
         if (iterator.hasNext()) iterator.next();
+    }
+
+    private void checkIfHeaderCellValueIsDuplicated(String headerCellValue) {
+        if (fullColumnNameList.contains(headerCellValue)) {
+            throw new GenericRuntimeException("The header cell value <" + headerCellValue + "> is duplicated in the sheet <" + sheetName + "> of the data source file <" + filePath + ">");
+        }
     }
 
     private void buildDataValueSubObjects(Cell propertyCell, String property, Cell valueCell, String value, int rowIndex, int columnIndex) {
@@ -237,7 +246,7 @@ public class DataSource {
     private void buildDataValueObjects(Cell rowKeyCell, String rowKeyValue, JsonObject filteredDataValueJsonObject, JsonObject fullDataValueJsonObject, JsonObject dataAddressJsonObject) {
         if ((rowKeyValue != null) && (!rowKeyValue.equals(""))) {
             if (fullDataValues.has(rowKeyValue)) {
-                LOGGER.log(Level.ERROR, "The row key <" + rowKeyValue + "> is duplicated.");
+                throw new GenericRuntimeException("The row key <" + rowKeyValue + "> is duplicated in the sheet <" + sheetName + "> of the data source file <" + filePath + ">");
             }
 
             if (cellFillColorCodeIsWhite(rowKeyCell)) {
@@ -299,6 +308,16 @@ public class DataSource {
             }
 
             buildDataValueObjects(rowKeyCell, rowKeyValue, filteredDataValueJsonObject, fullDataValueJsonObject, dataAddressJsonObject);
+        }
+    }
+
+    private void tryFindDataSourceFileAndReturnPath(String filePath) {
+        String foundFilePath = new FileOprs().tryFindFileAndReturnPath(filePath);
+
+        if (new StringOprs().isEmptyOrNull(foundFilePath)) {
+            throw new GenericRuntimeException("The data source file <" + filePath + "> was not found");
+        } else {
+            this.filePath = foundFilePath;
         }
     }
 }

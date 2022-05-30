@@ -6,12 +6,15 @@ import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
 import com.qa.automation.utils.java.utils.common.FileOprs;
 import com.qa.automation.utils.java.utils.common.StringOprs;
+import com.qa.automation.utils.java.utils.exception.GenericRuntimeException;
 import com.qa.automation.utils.java.utils.params.JavaUtilsParams;
-import org.apache.log4j.Level;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.json.simple.JSONArray;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 import java.io.*;
 import java.nio.charset.Charset;
@@ -209,8 +212,7 @@ public class JsonOprs {
                             if (jsonObject.get(cellValue) == null) {
                                 jsonObject.add(cellValue, columnValues);
                             } else {
-                                LOGGER.log(Level.INFO, "El nombre de columna <" + cellValue + "> ubicado en la columna número <" + (cell.getColumnIndex() + 1) + "> se encuentra repetido.");
-                                System.exit(1);
+                                throw new GenericRuntimeException("The column name <" + cellValue + "> located in column number <" + (cell.getColumnIndex() + 1) + "> is duplicated");
                             }
 
                             maxColumnIndex = maxColumnIndex + 1;
@@ -233,7 +235,7 @@ public class JsonOprs {
                             if (!stringOprs.isEmptyOrNull(cellValue) && !existStringInStringsJsonArray(cellValue, jsonObject.get(columnName).getAsJsonArray())) {
                                 jsonObject.get(columnName).getAsJsonArray().add(cellValue);
                             } else if (!stringOprs.isEmptyOrNull(cellValue)) {
-                                LOGGER.log(Level.WARN, "El dato <" + cellValue + "> ubicado en la fila número <" + (cell.getRowIndex() + 1) + "> se encuentra repetido en la columna <" + columnName + ">, se tendrá en cuenta una sola ocurrencia.");
+                                LOGGER.warn("El dato <" + cellValue + "> ubicado en la fila número <" + (cell.getRowIndex() + 1) + "> se encuentra repetido en la columna <" + columnName + ">, se tendrá en cuenta una sola ocurrencia.");
                             }
                         } else {
                             break;
@@ -343,5 +345,13 @@ public class JsonOprs {
 
     public JsonObject getJsonObject(String jsonFileName) {
         return JsonParser.parseString(new FileOprs().getFileContent(jsonFileName)).getAsJsonObject();
+    }
+
+    public static JSONArray parseJsonArrayStringToJSONArrayObject(String jsonArrayString) {
+        try {
+            return (JSONArray) new JSONParser().parse(jsonArrayString);
+        } catch (ParseException e) {
+            return new JSONArray();
+        }
     }
 }

@@ -1,9 +1,7 @@
 package com.qa.automation.utils.java.utils.params;
 
 import com.qa.automation.utils.java.utils.common.StringOprs;
-import org.apache.log4j.Level;
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+import com.qa.automation.utils.java.utils.exception.GenericRuntimeException;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -11,8 +9,6 @@ import java.io.InputStream;
 import java.util.Properties;
 
 public class ProjectConfigProperties {
-
-    private static final Logger LOGGER = LogManager.getLogger(ProjectConfigProperties.class);
 
     private static final String PROJECT_CONFIG_PROPERTIES_FILE_NAME = "project.config.properties";
     private static final String MAIN_RESOURCES_DIRECTORY_PATH = "src/main/resources/";
@@ -35,8 +31,7 @@ public class ProjectConfigProperties {
             File configPropertiesFileObject = new File(configPropertiesFilePath);
             addConfigPropertiesFile(configPropertiesFileObject);
         } catch (Exception e) {
-            LOGGER.log(Level.ERROR, "No fue posible cargar el archivo de propiedades de configuración del proyecto");
-            System.exit(1);
+            throw new GenericRuntimeException("Could not load project configuration properties file");
         }
     }
 
@@ -47,8 +42,7 @@ public class ProjectConfigProperties {
             properties.load(inputStream);
             ProjectConfigProperties.properties.putAll(properties);
         } catch (Exception e) {
-            LOGGER.log(Level.ERROR, "No fue posible cargar el archivo de propiedades de configuración del proyecto");
-            System.exit(1);
+            throw new GenericRuntimeException("Could not load project configuration properties file");
         }
     }
 
@@ -66,8 +60,7 @@ public class ProjectConfigProperties {
         if (!stringOprs.isEmptyOrNull(key)) key = key.trim();
         String value = properties == null ? null : properties.getProperty(key, "");
         if (stringOprs.isEmptyOrNull(value)) {
-            LOGGER.log(Level.WARN, "El parámetro de configuración del proyecto <" + key + "> no existe");
-            System.exit(1);
+            throw new GenericRuntimeException("The project configuration parameter <" + key + "> does not exist");
         }
         return value == null ? null : value.trim();
     }

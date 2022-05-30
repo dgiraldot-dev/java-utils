@@ -3,12 +3,13 @@ package com.qa.automation.utils.java.utils.excel;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.qa.automation.utils.java.utils.common.StringOprs;
-import org.apache.log4j.Level;
+import com.qa.automation.utils.java.utils.exception.GenericRuntimeException;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
 import javax.sql.rowset.CachedRowSet;
 import java.io.File;
 import java.io.FileInputStream;
@@ -53,7 +54,7 @@ public class ExcelOprs {
             workbook = new XSSFWorkbook(fileInputStream);
             return workbook;
         } catch (Exception e) {
-            return null;
+            throw new GenericRuntimeException(e);
         }
     }
 
@@ -67,7 +68,7 @@ public class ExcelOprs {
             workbook.write(fileOutputStream);
             closeWorkbook();
         } catch (Exception e) {
-            // Nothing
+            throw new GenericRuntimeException(e);
         }
     }
 
@@ -78,7 +79,7 @@ public class ExcelOprs {
             if (workbook != null) workbook.close();
             resetAttributes();
         } catch (Exception e) {
-            // Nothing
+            throw new GenericRuntimeException(e);
         }
     }
 
@@ -239,7 +240,7 @@ public class ExcelOprs {
     String sheetNameTwo;
 
     public boolean compareExcelFiles(String expectedFilePath, String actualFilePath) {
-        LOGGER.log(Level.INFO, new StringBuilder("Comparando contenido de archivos excel: expectedFilePath: ").append(expectedFilePath).append(" | actualFilePath: ").append(actualFilePath).toString());
+        LOGGER.info(new StringBuilder("Comparando contenido de archivos excel: expectedFilePath: ").append(expectedFilePath).append(" | actualFilePath: ").append(actualFilePath).toString());
 
         workbookJsonObjectOne = loadWorkbookToJsonObject(expectedFilePath);
         workbookJsonObjectTwo = loadWorkbookToJsonObject(actualFilePath);
@@ -264,13 +265,13 @@ public class ExcelOprs {
 
         workbookJsonObject = null;
 
-        LOGGER.log(Level.INFO, new StringBuilder("Resultado comparación contenido de archivos excel: ").append(comparationStatus).toString());
+        LOGGER.info(new StringBuilder("Resultado comparación contenido de archivos excel: ").append(comparationStatus).toString());
 
-        LOGGER.log(Level.INFO, new StringBuilder("Resultado comparación contenido de archivos excel - Número de hojas: ").append(sheetNumberValidation).toString());
-        LOGGER.log(Level.INFO, new StringBuilder("Resultado comparación contenido de archivos excel - Nombres y ubicación de hojas: ").append(sheetNamesValidation).toString());
-        LOGGER.log(Level.INFO, new StringBuilder("Resultado comparación contenido de archivos excel - Número de filas en cada hoja: ").append(rowNumberValidation).toString());
-        LOGGER.log(Level.INFO, new StringBuilder("Resultado comparación contenido de archivos excel - Número de columnas en cada hoja: ").append(columnNumberValidation).toString());
-        LOGGER.log(Level.INFO, new StringBuilder("Resultado comparación contenido de archivos excel - Valores de celda en cada hoja: ").append(cellValueValidation).toString());
+        LOGGER.info(new StringBuilder("Resultado comparación contenido de archivos excel - Número de hojas: ").append(sheetNumberValidation).toString());
+        LOGGER.info(new StringBuilder("Resultado comparación contenido de archivos excel - Nombres y ubicación de hojas: ").append(sheetNamesValidation).toString());
+        LOGGER.info(new StringBuilder("Resultado comparación contenido de archivos excel - Número de filas en cada hoja: ").append(rowNumberValidation).toString());
+        LOGGER.info(new StringBuilder("Resultado comparación contenido de archivos excel - Número de columnas en cada hoja: ").append(columnNumberValidation).toString());
+        LOGGER.info(new StringBuilder("Resultado comparación contenido de archivos excel - Valores de celda en cada hoja: ").append(cellValueValidation).toString());
 
         return comparationStatus;
     }

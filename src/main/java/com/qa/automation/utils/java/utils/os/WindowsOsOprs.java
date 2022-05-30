@@ -3,6 +3,9 @@ package com.qa.automation.utils.java.utils.os;
 import com.qa.automation.utils.java.utils.common.FileOprs;
 import com.qa.automation.utils.java.utils.common.JavaOprs;
 import com.qa.automation.utils.java.utils.common.StringOprs;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -14,6 +17,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class WindowsOsOprs {
+
+    private static final Logger LOGGER = LogManager.getLogger(WindowsOsOprs.class);
 
     public WindowsOsOprs() {
         // Initialize without attributes
@@ -129,7 +134,7 @@ public class WindowsOsOprs {
             BufferedReader input =
                     new BufferedReader(new InputStreamReader(p.getInputStream()));
             while ((line = input.readLine()) != null) {
-                System.out.println(line); //<-- Parse data here.
+                LOGGER.info(line); //<-- Parse data here.
             }
             input.close();
         } catch (Exception e) {

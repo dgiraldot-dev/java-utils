@@ -8,9 +8,7 @@
  */
 package com.qa.automation.utils.java.utils.data_source;
 
-import org.apache.log4j.Level;
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+import com.qa.automation.utils.java.utils.exception.GenericRuntimeException;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
@@ -18,8 +16,6 @@ import java.io.File;
 import java.io.FileInputStream;
 
 public class XlsxWorkbook {
-
-    private static final Logger LOGGER = LogManager.getLogger(XlsxWorkbook.class);
 
     private String xlsxFilePath;
 
@@ -31,8 +27,7 @@ public class XlsxWorkbook {
         try {
             return new XSSFWorkbook(new FileInputStream(new File(xlsxFilePath)));
         } catch (Exception e) {
-            LOGGER.log(Level.ERROR, e.getMessage());
-            return null;
+            throw new GenericRuntimeException(e);
         }
     }
 }
