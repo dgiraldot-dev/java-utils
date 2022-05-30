@@ -13,4 +13,8 @@ public class JavaUtilsParams {
     public static final String JSON_EXTENSION = ".json";
 
     //OTHER PARAMS
+
+    public JavaUtilsParams() {
+
+    }
 }
