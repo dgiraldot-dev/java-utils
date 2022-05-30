@@ -144,6 +144,14 @@ public class DataSource {
         return fullDataValues.getAsJsonObject(key);
     }
 
+    public JsonObject getDataItem(String key) {
+        return getDataItemFromFilteredDataValues(key);
+    }
+
+    public JsonElement getDataValue(String key, String property) {
+        return getDataItemFromFilteredDataValues(key).get(property);
+    }
+
     public Cell getCell(int rowIndex, int columnIndex) {
         return (workbook != null) ? workbook.getSheet(sheetName).getRow(rowIndex).getCell(columnIndex) : null;
     }
