@@ -44,7 +44,7 @@ public class JsonOprs {
         try (Writer writer = new OutputStreamWriter(new FileOutputStream(jsonFilePath), Charset.forName(JavaUtilsParams.CONTENT_ENCODING_TYPE))) {
             writer.write(gson.toJson(jsonObject));
         } catch (Exception e) {
-            // Nothing
+            throw new GenericRuntimeException(e);
         }
     }
 
@@ -128,7 +128,7 @@ public class JsonOprs {
             fileInputStream = new FileInputStream(new File(excelDataFilePath));
             workbook = new XSSFWorkbook(fileInputStream);
         } catch (Exception e) {
-            // Nothing
+            throw new GenericRuntimeException(e);
         }
 
         int numberOfSheets = workbook.getNumberOfSheets();
@@ -146,7 +146,7 @@ public class JsonOprs {
             fileInputStream.close();
             workbook.close();
         } catch (Exception e) {
-            // Nothing
+            LOGGER.warn(e.getMessage());
         }
 
         return jsonObject;
@@ -163,7 +163,7 @@ public class JsonOprs {
             fileInputStream = new FileInputStream(new File(excelDataFilePath));
             workbook = new XSSFWorkbook(fileInputStream);
         } catch (Exception e) {
-            // Nothing
+            throw new GenericRuntimeException(e);
         }
 
         Sheet sheet = workbook.getSheet(excelSheetName);
@@ -174,7 +174,7 @@ public class JsonOprs {
             fileInputStream.close();
             workbook.close();
         } catch (Exception e) {
-            // Nothing
+            LOGGER.warn(e.getMessage());
         }
 
         return jsonObject;
@@ -264,7 +264,7 @@ public class JsonOprs {
             fileInputStream = new FileInputStream(new File(excelDataFilePath));
             workbook = new XSSFWorkbook(fileInputStream);
         } catch (Exception e) {
-            // Nothing
+            throw new GenericRuntimeException(e);
         }
 
         Sheet sheet = workbook.getSheet(excelSheetName);
@@ -322,7 +322,7 @@ public class JsonOprs {
             fileInputStream.close();
             workbook.close();
         } catch (Exception e) {
-            // Nothing
+            LOGGER.warn(e.getMessage());
         }
 
         return jsonObject;
@@ -337,7 +337,7 @@ public class JsonOprs {
         try {
             documentContext = JsonPath.using(Configuration.defaultConfiguration()).parse(jsonObjectFile);
         } catch (IOException e) {
-            // Nothing
+            throw new GenericRuntimeException(e);
         }
 
         return documentContext;
