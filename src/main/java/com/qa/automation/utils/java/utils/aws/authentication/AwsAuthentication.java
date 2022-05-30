@@ -12,6 +12,7 @@ import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicSessionCredentials;
 import com.jayway.jsonpath.DocumentContext;
 import com.qa.automation.utils.java.utils.common.FileOprs;
+import com.qa.automation.utils.java.utils.exception.GenericRuntimeException;
 import com.qa.automation.utils.java.utils.json.JsonOprs;
 
 public class AwsAuthentication {
@@ -39,6 +40,8 @@ public class AwsAuthentication {
   }
   
   private void getCredentialValues() {
+    if (awsCredentialsFilePath == null) throw new GenericRuntimeException("The AWS credentials file was not found");
+
     DocumentContext documentContext = new JsonOprs().getDocumentContext(awsCredentialsFilePath);
     awsAccessKey = documentContext.read("$.awsAccessKey");
     awsSecretKey = documentContext.read("$.awsSecretKey");
