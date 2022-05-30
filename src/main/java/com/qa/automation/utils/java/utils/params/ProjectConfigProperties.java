@@ -2,6 +2,8 @@ package com.qa.automation.utils.java.utils.params;
 
 import com.qa.automation.utils.java.utils.common.StringOprs;
 import com.qa.automation.utils.java.utils.exception.GenericRuntimeException;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -9,6 +11,8 @@ import java.io.InputStream;
 import java.util.Properties;
 
 public class ProjectConfigProperties {
+
+    private static final Logger LOGGER = LogManager.getLogger(ProjectConfigProperties.class);
 
     private static final String PROJECT_CONFIG_PROPERTIES_FILE_NAME = "project.config.properties";
     private static final String MAIN_RESOURCES_DIRECTORY_PATH = "src/main/resources/";
@@ -31,7 +35,7 @@ public class ProjectConfigProperties {
             File configPropertiesFileObject = new File(configPropertiesFilePath);
             addConfigPropertiesFile(configPropertiesFileObject);
         } catch (Exception e) {
-            throw new GenericRuntimeException("Could not load project configuration properties file");
+            LOGGER.warn("Could not load project configuration properties file <" + configPropertiesFilePath + ">");
         }
     }
 
@@ -42,7 +46,7 @@ public class ProjectConfigProperties {
             properties.load(inputStream);
             ProjectConfigProperties.properties.putAll(properties);
         } catch (Exception e) {
-            throw new GenericRuntimeException("Could not load project configuration properties file");
+            LOGGER.warn("Could not load project configuration properties file <" + configPropertiesFileObject.getPath() + ">");
         }
     }
 
