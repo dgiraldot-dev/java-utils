@@ -1,11 +1,3 @@
-/**
- * Grupo Aval Acciones y Valores S.A. CONFIDENTIAL
- *
- * <p>Copyright (c) 2018 . All Rights Reserved.
- *
- * <p>NOTICE: This file is subject to the terms and conditions defined in file 'LICENSE', which is
- * part of this source code package.
- */
 package com.qa.automation.utils.java.utils.data_source;
 
 import com.google.gson.JsonArray;
@@ -17,6 +9,7 @@ import com.qa.automation.utils.java.utils.exception.GenericRuntimeException;
 import org.apache.poi.ss.usermodel.*;
 
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -192,6 +185,16 @@ public class DataSource {
 
     public void saveDataSourceCopy() {
         saveDataSource(fileCopyPath);
+    }
+
+    public void closeWorkbook() {
+        if (workbook != null) {
+            try {
+                workbook.close();
+            } catch (IOException e) {
+                // Nothing
+            }
+        }
     }
 
     private String getCellFillColorCode(Cell cell) {
